@@ -44,6 +44,15 @@ void read_image(const char* input, const char* output) {
     fseek(file, offset, SEEK_SET);
     fread(img, sizeof(uint8_t), width*height, file);
 
+    // Das Bild zurückschreiben
+    write_image(header, img, width, height, output);
+
+    fclose(file);
+    free(img);
+}
+
+void write_image(uint8_t* header, const uint8_t* img, uint32_t width, uint32_t height, const char* output) {
+
     // Neue Datei erstellen
     FILE* newfile = fopen(output, "wb");
 
@@ -52,6 +61,4 @@ void read_image(const char* input, const char* output) {
     fwrite(img, sizeof(uint8_t), width*height, newfile);
 
     fclose(newfile);
-    fclose(file);
-    free(img);
 }
