@@ -6,21 +6,26 @@
 #include <string.h>
 #include <getopt.h>
 
+// Vorläufige Version, keine Tests für ungültige Eingaben
 int main(int argc, char *argv[]) {
 
     int opt;
-    int version;
-    int laufzeit = 0;
-    char* input;
-    char* output;
+    int version, laufzeit = 0;
+    char *input, *output;
     size_t x, y, width, height, scale;
 
-
+    // -h, --help
     if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0) {
         printf("%s\n", "help :'(");
         return 0;
     }
 
+    // -V <Zahl> -B <Zahl>
+    // <Dateiname> (ist nicht hier zugewiesen)
+    // -s <Zahl>,<Zahl> 
+    // -w <Zahl> -h <Zahl> 
+    // -f <Zahl> 
+    // -o <Dateiname>
     while((opt = getopt(argc, argv, "V:B:s:w:h:f:o:")) != -1) {
         switch(opt) {
             case 'V':
@@ -50,8 +55,12 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // input Dateiname
     input = argv[optind];
 
+    read_header(input);
+
+    // testing
     printf("V: %d\n", version);
     printf("B: %d\n", laufzeit);
     printf("i: %s\n", input);
