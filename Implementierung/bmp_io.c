@@ -11,34 +11,43 @@ void read_image(const char* input, const char* output) {
     uint32_t width;
     uint32_t height;
     uint8_t header[54];
+    uint8_t* img = malloc(width * height * sizeof(uint8_t));
 
+    // Header speichern
     fread(header, sizeof(uint8_t), 54, file);
 
+    // Anfang der Pixeldaten extrahieren
     fseek(file, 10, SEEK_SET);
     fread(&offset, sizeof(uint8_t), 4, file);
 
+    // Breite extrahieren
     fseek(file, 18, SEEK_SET);
     fread(&width, sizeof(uint8_t), 4, file);
 
+    // Höhe extrahieren
     fseek(file, 22, SEEK_SET);
     fread(&height, sizeof(uint8_t), 4, file);
 
+    // Bildinformation printen
     printf("Offset: %u\n", offset);
     printf("Image Width: %u\n", width);
     printf("Image Height: %u\n", height);
 
+    // Berechnen der Breite in Pixeln + Padding
     width = ((width * 3) + (width % 4));
 
     printf("Image Width in bytes: %u\n", width);
     printf("Image Height in pixels: %u\n", height);
+    printf("Total pixel array size: %u\n", width*height);
 
-    uint8_t* img = malloc(width * height * sizeof(uint8_t));
-
+    // Einlesen des Pixel-Arrays in das img-Array
     fseek(file, offset, SEEK_SET);
     fread(img, sizeof(uint8_t), width*height, file);
 
+    // Neue Datei erstellen
     FILE* newfile = fopen(output, "wb");
 
+    // Header und das Pixel-Array hineinschreiben
     fwrite(header, sizeof(uint8_t), 54, newfile);
     fwrite(img, sizeof(uint8_t), width*height, newfile);
 
