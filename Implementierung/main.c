@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
     // input Dateiname
     input = argv[optind];
 
-    read_header(input);
+    read_image(input, output);
 
     // testing
     printf("V: %d\n", version);
