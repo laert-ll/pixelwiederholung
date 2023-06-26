@@ -3,15 +3,15 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-void read_image(const char* input, const char* output) {
+void read_image(const char *input, const char *output) {
 
-    FILE* file = fopen(input, "rb");
+    FILE *file = fopen(input, "rb");
 
     uint32_t offset;
-    uint32_t width;
-    uint32_t height;
+    uint32_t width = 0;
+    uint32_t height = 0;
     uint8_t header[54];
-    uint8_t* img = malloc(width * height * sizeof(uint8_t));
+    uint8_t *img = malloc(width * height * sizeof(uint8_t));
 
     // Header speichern
     fread(header, sizeof(uint8_t), 54, file);
@@ -38,11 +38,11 @@ void read_image(const char* input, const char* output) {
 
     printf("Image Width in bytes: %u\n", width);
     printf("Image Height in pixels: %u\n", height);
-    printf("Total pixel array size: %u\n", width*height);
+    printf("Total pixel array size: %u\n", width * height);
 
     // Einlesen des Pixel-Arrays in das img-Array
     fseek(file, offset, SEEK_SET);
-    fread(img, sizeof(uint8_t), width*height, file);
+    fread(img, sizeof(uint8_t), width * height, file);
 
     // Das Bild zurückschreiben
     write_image(header, img, width, height, output);
@@ -51,14 +51,14 @@ void read_image(const char* input, const char* output) {
     free(img);
 }
 
-void write_image(uint8_t* header, const uint8_t* img, uint32_t width, uint32_t height, const char* output) {
+void write_image(uint8_t *header, const uint8_t *img, uint32_t width, uint32_t height, const char *output) {
 
     // Neue Datei erstellen
-    FILE* newfile = fopen(output, "wb");
+    FILE *newfile = fopen(output, "wb");
 
     // Header und das Pixel-Array hineinschreiben
     fwrite(header, sizeof(uint8_t), 54, newfile);
-    fwrite(img, sizeof(uint8_t), width*height, newfile);
+    fwrite(img, sizeof(uint8_t), width * height, newfile);
 
     fclose(newfile);
 }
