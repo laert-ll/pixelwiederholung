@@ -17,18 +17,14 @@ void window(uint8_t *img, size_t x, size_t y, size_t width, size_t height, uint8
     // Berechne den Zeiger zum ersten Pixel im Fenster
     uint8_t *windowStart = img + (y * imageWidth + x) * 3;
 
-        printf("width: %ld\n", width);
-        printf("height: %ld\n", height);
-        printf("imageWidth: %d\n", imageWidth);
-        printf("imageHeight: %d\n", imageHeight);
-
     // Kopiere den Inhalt des Fensters in das Ergebnis
     for (size_t row = 0; row < height; ++row) {
+        memcpy(result + row * width * 3, windowStart + row * imageWidth * 3, width * 3);
         printf("Row: %ld\n", row);
-        printf("From: %ld\n", row * imageWidth);
-        printf("To: %ld\n", row * width);
-        printf("Size: %ld\n\n", width * 3);
-        memcpy(result + row * width * 3, windowStart + row * imageWidth, width * 3);
+        for (size_t i = 0; i < width; ++i) {
+            printf("(%d, %d, %d)", result[(row * width + i) * 3], result[(row * width + i) * 3 + 1], result[(row * width + i) * 3 + 2]);
+        }
+        printf("\n\n");
     }
 }
 

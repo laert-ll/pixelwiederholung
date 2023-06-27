@@ -61,7 +61,7 @@ void write_image(uint8_t *header, const uint8_t *img, uint32_t width, uint32_t h
 
     // Header und das Pixel-Array hineinschreiben
     fwrite(header, sizeof(uint8_t), 54, newfile);
-    fwrite(img, sizeof(uint8_t), width * height, newfile);
+    fwrite(img, sizeof(uint8_t), width * height * 3, newfile);
 
     fclose(newfile);
 }
@@ -85,6 +85,7 @@ void window_test(const char *input, const char *output, size_t x, size_t y, size
     fseek(file, 22, SEEK_SET);
     fread(&imageHeight, sizeof(uint8_t), 4, file);
 
+    // Berechnen der Breite in Pixeln + Padding
     imageWidth = ((imageWidth * 3) + (imageWidth % 4));
 
     // Einlesen des Pixel-Arrays in das img-Array
@@ -98,10 +99,8 @@ void window_test(const char *input, const char *output, size_t x, size_t y, size
     window(img, x, y, width, height, windowImg, imageWidth, imageHeight);
 
     // Header modifizieren
-    uint32_t newWidth = width;
-    uint32_t newHeight = height;
-    memcpy(header + 18, &newWidth, sizeof(uint32_t));
-    memcpy(header + 22, &newHeight, sizeof(uint32_t));
+    memcpy(header + 18, &width, sizeof(uint32_t));
+    memcpy(header + 22, &height, sizeof(uint32_t));
 
     // Write the new image
     write_image(header, windowImg, width, height, output);

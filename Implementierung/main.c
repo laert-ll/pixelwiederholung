@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
     // input Dateiname
     input = argv[optind];
 
-    window_test(input, output, 0, 0, 128, 128);
+    window_test(input, output, x, y, width, height);
 
     // testing
     printf("V: %d\n", version);
