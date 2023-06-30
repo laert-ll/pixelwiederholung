@@ -136,10 +136,8 @@ int main(int argc, char *argv[]) {
 
     }
 
-    input = "/Users/till-olelohse/CLionProjects/pixelwiederholung/Implementierung/4_pixels.bmp";
-    output = "/Users/till-olelohse/CLionProjects/pixelwiederholung/Implementierung/4_pixels_output.bmp";
-
-    window_test(input, output, x, y, width, height, scale);
+    // input = "/Users/till-olelohse/CLionProjects/pixelwiederholung/Implementierung/4_pixels.bmp";
+    // output = "/Users/till-olelohse/CLionProjects/pixelwiederholung/Implementierung/4_pixels_output.bmp";
 
     // testing
     printf("V: %d\n", version);
@@ -151,6 +149,8 @@ int main(int argc, char *argv[]) {
     printf("h: %ld\n", height);
     printf("f: %ld\n", scale);
     printf("o: %s\n", output);
+
+    window_test(input, output, x, y, width, height);
 
     return 0;
 }
