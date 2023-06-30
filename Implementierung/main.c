@@ -158,6 +158,7 @@ int main(int argc, char *argv[]) {
             if (argLen >= extLen && strcmp(arg + argLen - extLen, extension) == 0) {
                 input = argv[i];
                 i += 1;
+                continue;
             } else {
                 printf("Fehler: Falsches Dateiformat angegeben");
                 return 0;
@@ -166,8 +167,8 @@ int main(int argc, char *argv[]) {
 
     }
 
-    input = "/Users/till-olelohse/CLionProjects/pixelwiederholung/Implementierung/4_pixels.bmp";
-    output = "/Users/till-olelohse/CLionProjects/pixelwiederholung/Implementierung/4_pixels_output.bmp";
+    // input = "/Users/till-olelohse/CLionProjects/pixelwiederholung/Implementierung/4_pixels.bmp";
+    // output = "/Users/till-olelohse/CLionProjects/pixelwiederholung/Implementierung/4_pixels_output.bmp";
 
     window_test(input, output, x, y, width, height, scale
     );
