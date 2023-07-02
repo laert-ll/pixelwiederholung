@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stddef.h>
 
-void window_test(const char *input, const char *output, size_t x, size_t y, size_t width, size_t height) {
+void window_test(const char *input, const char *output, size_t x, size_t y, size_t width, size_t height, size_t scale) {
 
     FILE *file = fopen(input, "rb");
 

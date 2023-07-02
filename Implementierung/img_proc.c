@@ -19,14 +19,6 @@ void window(uint8_t *img, size_t x, size_t y, size_t width, size_t height, uint8
 }
 
 // vorläufig, muss getestet werden
-void zoom(const uint8_t *img, size_t width, size_t height, size_t scale_factor,
-          uint8_t *result) {
-
-    // Kopiere einzelne Felder von window mit passenden Abständen nach result
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            result[scale_factor * scale_factor * width * i] =
-                    img[(i * width) + j]; // i*width = current row, j = current column
-        }
-    }
+void zoom(const uint8_t *img, size_t width, size_t height, size_t scale_factor, uint8_t *result) {
+    // TODO: machen
 }
