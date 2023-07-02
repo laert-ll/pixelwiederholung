@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stddef.h>
 
-void window_test(const char *input, const char *output, size_t x, size_t y, size_t width, size_t height) {
+void window_test(const char *input, const char *output, size_t x, size_t y, size_t width, size_t height, size_t scale) {
 
     FILE *file = fopen(input, "rb");
 
@@ -39,8 +39,8 @@ void window_test(const char *input, const char *output, size_t x, size_t y, size
 
     // window aufrufen
     uint8_t *windowImg = malloc(((width * 3) + (width % 4)) * height * sizeof(uint8_t));
-    window(img, x, y, width, height, windowImg, imageWidth, imageHeight);
-
+    // window(img, x, y, width, height, windowImg, imageWidth, imageHeight);
+    zoom(img, width, height, scale, input);
     // Header modifizieren
     memcpy(header + 18, &width, sizeof(uint32_t));
     memcpy(header + 22, &height, sizeof(uint32_t));

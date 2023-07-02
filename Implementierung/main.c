@@ -167,10 +167,10 @@ int main(int argc, char *argv[]) {
 
     }
 
-    // input = "/Users/till-olelohse/CLionProjects/pixelwiederholung/Implementierung/4_pixels.bmp";
-    // output = "/Users/till-olelohse/CLionProjects/pixelwiederholung/Implementierung/4_pixels_output.bmp";
+    // input = "/Users/till-olelohse/CLionProjects/pixelwiederholung/Implementierung/16_pixels.bmp";
+     output = "/Users/till-olelohse/CLionProjects/pixelwiederholung/Implementierung/4_pixels_output.bmp";
 
-    window_test(input, output, x, y, width, height);
+    window_test(input, output, x, y, width, height, scale);
 
 // testing
     printf("V: %d\n", version);

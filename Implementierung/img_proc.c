@@ -18,8 +18,16 @@ void window(uint8_t *img, size_t x, size_t y, size_t width, size_t height, uint8
     }
 }
 
-// vorläufig, muss getestet werden
-void zoom(const uint8_t *img, size_t width, size_t height, size_t scale_factor,
-          uint8_t *result) {
-// TODO
+void zoom(const uint8_t *img, size_t width, size_t height, size_t scale_factor, uint8_t *result) {
+    // Idee: x/y-Koordinate * scale_factor
+    size_t new_width = width * scale_factor;
+
+
+    for (size_t y = 0; y < height; y++) {
+        for (size_t x = 0; x < width; x++) {
+            uint8_t *currentPixel = img + (y * width + x * 3);
+            printf("Pixel:  %u\n", currentPixel);
+            memcpy(result + y * ((width * 3) + (width % 4)) * scale_factor, currentPixel + row * width, width * 3);
+        }
+    }
 }
