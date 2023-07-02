@@ -19,6 +19,7 @@ void window(uint8_t *img, size_t x, size_t y, size_t width, size_t height, uint8
 }
 
 // vorläufig, muss getestet werden
-void zoom(const uint8_t *img, size_t width, size_t height, size_t scale_factor, uint8_t *result) {
-    // TODO: machen
+void zoom(const uint8_t *img, size_t width, size_t height, size_t scale_factor,
+          uint8_t *result) {
+// TODO
 }
