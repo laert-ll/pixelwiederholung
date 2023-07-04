@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stddef.h>
 
-void window_test(const char *input, const char *output, size_t x, size_t y, size_t width, size_t height, size_t scale) {
+void window_test(const char *input, const char *output, size_t x, size_t y, size_t width, size_t height, size_t scale_factor) {
 
     FILE *file = fopen(input, "rb");
 
@@ -40,13 +40,21 @@ void window_test(const char *input, const char *output, size_t x, size_t y, size
     // window aufrufen
     uint8_t *windowImg = malloc(((width * 3) + (width % 4)) * height * sizeof(uint8_t));
     window(img, x, y, width, height, windowImg, imageWidth, imageHeight);
-    // zoom(img, imageWidth, imageHeight, scale, input);
+
+    // zoom aufrufen
+    uint8_t *zoomImg = malloc(((width * scale_factor * 3) + (width * scale_factor % 4)) * imageHeight * scale_factor * sizeof(uint8_t));
+    memset(zoomImg, 0, ((width * scale_factor * 3) + (width * scale_factor % 4)) * imageHeight * scale_factor * sizeof(uint8_t));
+    zoom(windowImg, width, height, scale_factor, zoomImg);
+
+    width = width * scale_factor;
+    height = height * scale_factor;
+
     // Header modifizieren
     memcpy(header + 18, &width, sizeof(uint32_t));
     memcpy(header + 22, &height, sizeof(uint32_t));
 
     // Neue image schreiben
-    write_image(header, windowImg, width, height, output);
+    write_image(header, zoomImg, width, height, output);
 
     free(img);
     free(windowImg);
