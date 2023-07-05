@@ -74,5 +74,85 @@ void zoom(const uint8_t *img, size_t width, size_t height, size_t scale, uint8_t
 
     }
 
-}
+    if (scale % 2 == 0) {
 
+        for (size_t y = 0; y < height; y++) {
+            for (size_t x = 0; x < width; x++) {
+                temp = (max_scaled_height - y*scaled_width*scale + x*3*scale);
+
+                // right side
+                for (int i = -1 * radius; i <= radius; i++) {
+
+                    if (temp + i*scaled_width + (radius+1)*3 > 0 && temp + i*scaled_width + (radius+1)*3 < max) {
+                            memcpy(result + temp + i*scaled_width + (radius+1)*3, result + temp, sizeof(uint8_t)*3);
+                    }
+                    if (x+1 >= width) {
+                        memcpy(result + temp + i*scaled_width + (radius+2)*3, result + temp, sizeof(uint8_t)*3*radius);
+                    }
+                }
+                if (x+1 >= width) {
+                    memcpy(result + temp + (-1*radius -1)*scaled_width + (radius+2)*3, result + temp, sizeof(uint8_t)*3*radius);
+                }
+
+                // bottom
+                for (int i = -3 * radius; i <= (radius+1)*3; i+=3) {
+
+                    
+                    if (y+1 >= height) {
+                        for(int j = 0; j < radius; j++) {
+                            // if (temp % scaled_width != 0)
+                               memcpy(result + temp - scaled_width*(radius+2+j) + i, result + temp, sizeof(uint8_t)*3);
+                        }
+                    }
+
+                    if (temp % scaled_width != 0 || i >=0) {
+                        memcpy(result + temp - scaled_width*(radius+1) + i, result + temp, sizeof(uint8_t)*3);
+                    }
+                }
+
+                // bottom-right edge
+                if (x+1 >= width && y+1 >= height) {
+                    for (int k = 0; k < radius; k++) {
+                        memcpy(result + temp - scaled_width*(radius+2+k) + (radius+2)*3,  result + temp, sizeof(uint8_t)*3*radius);
+                    }
+                }
+
+
+            }
+        }
+    }
+
+    else {
+        for (size_t y = 0; y < height; y++) {
+            for (size_t x = 0; x < width; x++) {
+                temp = (max_scaled_height - y*scaled_width*scale + x*3*scale);
+
+                
+                // right side
+                for (int i = -1 * radius; i <= radius; i++) {
+                    if (x+1 >= width) {
+                        memcpy(result + temp + i*scaled_width + (radius+1)*3, result + temp, sizeof(uint8_t)*3*radius);
+                    }
+                }
+
+                // bottom
+                for (int i = -3 * radius; i <= (radius+1)*3; i+=3) {
+                    
+                    if (y+1 >= height) {
+                        for(int j = 0; j < radius; j++) {
+                                memcpy(result + temp - scaled_width*(radius+1+j) + i, result + temp, sizeof(uint8_t)*3);
+                        }
+                    }
+                }
+                
+                // bottom-right edge
+                if (x+1 >= width && y+1 >= height) {
+                    for (int k = 0; k < radius; k++) {
+                        memcpy(result + temp - scaled_width*(radius+1+k) + (radius+1)*3,  result + temp, sizeof(uint8_t)*3*radius);
+                    }
+                }
+            }
+        }
+    }
+
+}
