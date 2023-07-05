@@ -75,20 +75,23 @@ void zoom(const uint8_t *img, size_t width, size_t height, size_t scale, uint8_t
                 temp = (max_scaled_height - y * scaled_width * scale + x * 3 * scale);
 
                 // Lücken auf der rechten Seite
-                for (int i = -2 * radius; i <= radius; i++) {
-                    if (temp + i * scaled_width + (radius + 1) * 3 > 0 &&
-                        temp + i * scaled_width + (radius + 1) * 3 < max &&
-                        x + 1 < width) {
-                        memcpy(result + temp + i * scaled_width + (radius + 1) * 3, 
-                                result + temp, 
-                                sizeof(uint8_t) * 3);
+                for (int i = -1 * radius; i <= radius; i++) {
+                    if (temp + i*scaled_width + (radius+1)*3 > 0 &&
+                        temp + i*scaled_width + (radius+1)*3 < max) {
+                            memcpy(result + temp + i*scaled_width + (radius+1)*3,
+                                    result + temp, 
+                                    sizeof(uint8_t)*3);
                     }
-                    // rechter rand
-                    if (x + 1 >= width) {
-                        memcpy(result + temp + i * scaled_width + (radius + 2) * 3, 
+                    // Rechter Rand
+                    if (x+1 >= width) {
+                        memcpy(result + temp + i*scaled_width + (radius+2)*3,
                                 result + temp,
-                                sizeof(uint8_t) * 3 * radius);
+                                sizeof(uint8_t)*3*radius);
                     }
+                }
+                // Noch was kleines am rechten Rand
+                if (x+1 >= width) {
+                    memcpy(result + temp + (-1*radius -1)*scaled_width + (radius+2)*3, result + temp, sizeof(uint8_t)*3*radius);
                 }
 
                 // Lücken auf der Unterseite
