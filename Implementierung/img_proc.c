@@ -37,8 +37,8 @@ void zoom(const uint8_t *img, size_t width, size_t height, size_t scale, uint8_t
     for (size_t y = 0; y < height; y++) {
         for (size_t x = 0; x < width; x++) {
             memcpy(result + (max_scaled_height - y * scaled_width * scale + x * 3 * scale),
-                   img + (max_height - y * true_width + x * 3),
-                   sizeof(uint8_t) * 3);
+                    img + (max_height - y * true_width + x * 3),
+                    sizeof(uint8_t) * 3);
         }
     }
 
@@ -55,9 +55,12 @@ void zoom(const uint8_t *img, size_t width, size_t height, size_t scale, uint8_t
                     // vertikale Schnitt
                     for (int k = -1 * radius; k <= radius; k++) {
                         // Out-of-Bounds check
-                        if (temp + (scaled_width * k) + j > 0 && temp + (scaled_width * k) + j < max &&
+                        if (temp + (scaled_width * k) + j > 0 &&
+                            temp + (scaled_width * k) + j < max &&
                             (temp % scaled_width != 0 || j >= 0))
-                            memcpy(result + temp + (scaled_width * k) + j, result + temp, sizeof(uint8_t) * 3);
+                            memcpy(result + temp + (scaled_width * k) + j, 
+                                    result + temp, 
+                                    sizeof(uint8_t) * 3);
                     }
                 }
             }
@@ -76,26 +79,32 @@ void zoom(const uint8_t *img, size_t width, size_t height, size_t scale, uint8_t
                     if (temp + i * scaled_width + (radius + 1) * 3 > 0 &&
                         temp + i * scaled_width + (radius + 1) * 3 < max &&
                         x + 1 < width) {
-                        memcpy(result + temp + i * scaled_width + (radius + 1) * 3, result + temp, sizeof(uint8_t) * 3);
+                        memcpy(result + temp + i * scaled_width + (radius + 1) * 3, 
+                                result + temp, 
+                                sizeof(uint8_t) * 3);
                     }
                     // rechter rand
                     if (x + 1 >= width) {
-                        memcpy(result + temp + i * scaled_width + (radius + 2) * 3, result + temp,
-                               sizeof(uint8_t) * 3 * radius);
+                        memcpy(result + temp + i * scaled_width + (radius + 2) * 3, 
+                                result + temp,
+                                sizeof(uint8_t) * 3 * radius);
                     }
                 }
 
                 // Lücken auf der Unterseite
                 for (int i = -3 * radius; i <= (radius + 1) * 3; i += 3) {
                     if (temp % scaled_width != 0 || i >= 0) {
-                        memcpy(result + temp - scaled_width * (radius + 1) + i, result + temp, sizeof(uint8_t) * 3);
+                        memcpy(result + temp - scaled_width * (radius + 1) + i, 
+                                result + temp, 
+                                sizeof(uint8_t) * 3);
                     }
                     // unterer Rand
                     if (y + 1 >= height) {
                         for (int j = 0; j < radius; j++) {
                             // if (temp % scaled_width != 0)
-                            memcpy(result + temp - scaled_width * (radius + 2 + j) + i, result + temp,
-                                   sizeof(uint8_t) * 3);
+                            memcpy(result + temp - scaled_width * (radius + 2 + j) + i, 
+                                    result + temp,
+                                    sizeof(uint8_t) * 3);
                         }
                     }
                 }
@@ -103,15 +112,16 @@ void zoom(const uint8_t *img, size_t width, size_t height, size_t scale, uint8_t
                 // Lücke am unteren rechten Rand
                 if (x + 1 >= width && y + 1 >= height) {
                     for (int k = 0; k < radius; k++) {
-                        memcpy(result + temp - scaled_width * (radius + 2 + k) + (radius + 2) * 3, result + temp,
-                               sizeof(uint8_t) * 3 * radius);
+                        memcpy(result + temp - scaled_width * (radius + 2 + k) + (radius + 2) * 3, 
+                                result + temp,
+                                sizeof(uint8_t) * 3 * radius);
                     }
                 }
             }
         }
     }
 
-        // Sonst nur Rand
+    // Sonst nur Rand
     else {
         for (size_t y = 0; y < height; y++) {
             for (size_t x = 0; x < width; x++) {
@@ -121,8 +131,9 @@ void zoom(const uint8_t *img, size_t width, size_t height, size_t scale, uint8_t
                 // Rechter Rand
                 for (int i = -1 * radius; i <= radius; i++) {
                     if (x + 1 >= width) {
-                        memcpy(result + temp + i * scaled_width + (radius + 1) * 3, result + temp,
-                               sizeof(uint8_t) * 3 * radius);
+                        memcpy(result + temp + i * scaled_width + (radius + 1) * 3, 
+                                result + temp,
+                                sizeof(uint8_t) * 3 * radius);
                     }
                 }
 
@@ -130,8 +141,9 @@ void zoom(const uint8_t *img, size_t width, size_t height, size_t scale, uint8_t
                 for (int i = -3 * radius; i <= (radius + 1) * 3; i += 3) {
                     if (y + 1 >= height) {
                         for (int j = 0; j < radius; j++) {
-                            memcpy(result + temp - scaled_width * (radius + 1 + j) + i, result + temp,
-                                   sizeof(uint8_t) * 3);
+                            memcpy(result + temp - scaled_width * (radius + 1 + j) + i, 
+                                    result + temp,
+                                    sizeof(uint8_t) * 3);
                         }
                     }
                 }
@@ -139,8 +151,9 @@ void zoom(const uint8_t *img, size_t width, size_t height, size_t scale, uint8_t
                 // Lücke am unteren rechten Rand
                 if (x + 1 >= width && y + 1 >= height) {
                     for (int k = 0; k < radius; k++) {
-                        memcpy(result + temp - scaled_width * (radius + 1 + k) + (radius + 1) * 3, result + temp,
-                               sizeof(uint8_t) * 3 * radius);
+                        memcpy(result + temp - scaled_width * (radius + 1 + k) + (radius + 1) * 3, 
+                                result + temp,
+                                sizeof(uint8_t) * 3 * radius);
                     }
                 }
             }
