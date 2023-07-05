@@ -6,7 +6,8 @@
 #include <string.h>
 #include <stddef.h>
 
-void window_test(const char *input, const char *output, size_t x, size_t y, size_t width, size_t height, size_t scale_factor) {
+void window_test(const char *input, const char *output, size_t x, size_t y, size_t width, size_t height,
+                 size_t scale_factor) {
 
     FILE *file = fopen(input, "rb");
 
@@ -42,10 +43,12 @@ void window_test(const char *input, const char *output, size_t x, size_t y, size
     window(img, x, y, width, height, windowImg, imageWidth, imageHeight);
 
     // zoom aufrufen
-    uint8_t *zoomImg = malloc(((width * scale_factor * 3) + (width * scale_factor % 4)) * imageHeight * scale_factor * sizeof(uint8_t));
-    memset(zoomImg, 0, ((width * scale_factor * 3) + (width * scale_factor % 4)) * imageHeight * scale_factor * sizeof(uint8_t));
+    size_t zoomedSize = ((width * scale_factor * 3) + (width * scale_factor % 4)) * imageHeight * scale_factor * sizeof(uint8_t);
+    uint8_t *zoomImg = malloc(zoomedSize);
+    memset(zoomImg, 0, zoomedSize);
     zoom(windowImg, width, height, scale_factor, zoomImg);
 
+    // zoomed width & height richtig setzen
     width = width * scale_factor;
     height = height * scale_factor;
 
