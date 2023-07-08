@@ -16,4 +16,4 @@ bmp_io.o: bmp_io.c bmp_io.h
 	$(CC) $(CFLAGS) -c bmp_io.c
 
 clean:
-	rm -f *.o main lena_output.bmp 4_pixels_output.bmp && clear
+	rm -f *.o main ../images/lena_output.bmp ../images/4_pixels_output.bmp
