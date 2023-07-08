@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stddef.h>
 
-void window_test(const char *input, const char *output, size_t x, size_t y, size_t width, size_t height,
+void pixelwiederholung(const char *input, const char *output, size_t x, size_t y, size_t width, size_t height,
                  size_t scale_factor) {
 
     FILE *file = fopen(input, "rb");
@@ -56,21 +56,14 @@ void window_test(const char *input, const char *output, size_t x, size_t y, size
     memcpy(header + 18, &width, sizeof(uint32_t));
     memcpy(header + 22, &height, sizeof(uint32_t));
 
-    // Neue image schreiben
-    write_image(header, zoomImg, width, height, output);
-
-    free(img);
-    free(windowImg);
-}
-
-void write_image(uint8_t *header, const uint8_t *img, uint32_t width, uint32_t height, const char *output) {
-
     // Neue Datei erstellen
     FILE *newfile = fopen(output, "wb");
 
     // Header und das Pixel-Array hineinschreiben
     fwrite(header, sizeof(uint8_t), 54, newfile);
-    fwrite(img, sizeof(uint8_t), ((width * 3) + (width % 4)) * height, newfile);
+    fwrite(zoomImg, sizeof(uint8_t), ((width * 3) + (width % 4)) * height, newfile);
 
     fclose(newfile);
+    free(img);
+    free(windowImg);
 }
