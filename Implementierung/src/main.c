@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
 
     execution_time = (double)(end_time - start_time) / CLOCKS_PER_SEC; // Ausführungszeit berechnen
 
-    printf("Die Ausführungszeit der main-Funktion beträgt: %.2f Sekunden\n", execution_time);
+    printf("Die Ausführungszeit der main-Funktion beträgt: %.6f Sekunden\n", execution_time);
 
     return 0;
 }
