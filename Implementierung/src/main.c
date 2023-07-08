@@ -1,10 +1,12 @@
 #include "bmp_io.h"
 #include "img_proc.h"
+#include <getopt.h>
+#include <regex.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <getopt.h>
-#include <regex.h>
+#include <time.h>
+
 
 // Vorläufige Version, keine Tests für ungültige Eingaben
 int main(int argc, char *argv[]) {
@@ -170,18 +172,28 @@ int main(int argc, char *argv[]) {
     // input = "/Users/till-olelohse/CLionProjects/pixelwiederholung/Implementierung/4_pixels.bmp";
     // output = "/Users/till-olelohse/CLionProjects/pixelwiederholung/Implementierung/4_pixels_output.bmp";
 
-    // testing
-    printf("V: %d\n", version);
-    printf("B: %d\n", laufzeit);
-    printf("i: %s\n", input);
-    printf("x: %ld\n", x);
-    printf("y: %ld\n", y);
-    printf("w: %ld\n", width);
-    printf("h: %ld\n", height);
-    printf("f: %ld\n", scale);
-    printf("o: %s\n", output);
+    // printf("V: %d\n", version);
+    // printf("B: %d\n", laufzeit);
+    // printf("i: %s\n", input);
+    // printf("x: %ld\n", x);
+    // printf("y: %ld\n", y);
+    // printf("w: %ld\n", width);
+    // printf("h: %ld\n", height);
+    // printf("f: %ld\n", scale);
+    // printf("o: %s\n", output);
+
+    clock_t start_time, end_time;
+    double execution_time;
+
+    start_time = clock(); // Startzeit messen
 
     pixelwiederholung(input, output, x, y, width, height, scale);
+
+    end_time = clock();
+
+    execution_time = (double)(end_time - start_time) / CLOCKS_PER_SEC; // Ausführungszeit berechnen
+
+    printf("Die Ausführungszeit der main-Funktion beträgt: %.2f Sekunden\n", execution_time);
 
     return 0;
 }
