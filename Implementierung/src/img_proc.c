@@ -103,4 +103,6 @@ void zoom(const uint8_t *img, size_t width, size_t height, size_t scale, uint8_t
                 sizeof(uint8_t) * 3 * width * scale);
     }
 
+    free(pixelAddr);
+
 }
