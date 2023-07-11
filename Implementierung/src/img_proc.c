@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>
+#include <stdlib.h>
 
 void window(uint8_t *img, size_t x, size_t y, size_t width, size_t height, uint8_t *result, uint32_t imageWidth,
             uint32_t imageHeight) {
@@ -19,147 +20,80 @@ void window(uint8_t *img, size_t x, size_t y, size_t width, size_t height, uint8
 void zoom(const uint8_t *img, size_t width, size_t height, size_t scale, uint8_t *result) {
 
     // Scaled width + Padding (in Bytes)
-    size_t scaled_width = ((width * scale * 3) + (width * scale * scale % 4));
+    size_t zoomedWidth = ((width * scale * 3) + (width * scale * scale % 4));
     // Scaled height in Bytes
-    size_t max_scaled_height = height * scale * scaled_width - scaled_width;
+    size_t zoomedHeight = height * scale * zoomedWidth - zoomedWidth;
     // Width + padding in Bytes
-    size_t true_width = (width * 3) + (width % 4);
-    // Height in Bytes
-    size_t max_height = height * true_width - true_width;
+    size_t paddedWidth = (width * 3) + (width % 4);
     // Ende von Pixel-array
-    size_t max = max_scaled_height + scaled_width;
+    size_t maxHeight = zoomedHeight + zoomedWidth;
+    // Anzahl von zu kopierenden Pixeln
+    size_t length = width*height;
     // Wo die zu kopierenden Pixeln gespeichert werden
     size_t temp = 0;
     // Anzahl an Layers von Nachbarn
     int radius = (scale - 1) / 2;
+    size_t index = 0;
+    size_t *fixpointAddr = malloc(length*sizeof(size_t));
 
     // Kopieren aller Originalpixel
     for (size_t y = 0; y < height; y++) {
         for (size_t x = 0; x < width; x++) {
-            memcpy(result + (max_scaled_height - y * scaled_width * scale + x * 3 * scale),
-                    img + (max_height - y * true_width + x * 3),
-                    sizeof(uint8_t) * 3);
+            fixpointAddr[index++] = zoomedHeight - y * zoomedWidth * scale + x * 3 * scale;
+            uint8_t* target_ptr = result + fixpointAddr[index-1];
+            uint8_t* source_ptr = img + ((height * paddedWidth - paddedWidth) - y * paddedWidth + x * 3);
+            target_ptr[0] = source_ptr[0];
+            target_ptr[1] = source_ptr[1];
+            target_ptr[2] = source_ptr[2];
         }
     }
 
     // Nachbarn kopieren
-    for (size_t y = 0; y < height; y++) {
-        for (size_t x = 0; x < width; x++) {
-            // Pixel das kopiert sein soll
-            temp = (max_scaled_height - y * scaled_width * scale + x * 3 * scale);
+    for (size_t t = 0; t < length; t++) {
+        // Pixel das kopiert sein soll
+        temp = fixpointAddr[t];
+        for (int i = -1*radius; i <= radius; i++) {
+            // Falls Pixel auf rechte seite steht, soll bissn rechter anfangen
+            if (t % width) index = 0;
+            else index = radius*3;
 
-            // Layers von Nachbarn kopieren
-            for (int i = 1; i <= radius; i++) {
-                // horizontale Schnitt
-                for (int j = -3 * i; j <= 3 * i; j += 3) {
-                    // vertikale Schnitt
-                    for (int k = -1 * radius; k <= radius; k++) {
-                        // Out-of-Bounds check
-                        if (temp + (scaled_width * k) + j > 0 &&
-                            temp + (scaled_width * k) + j < max &&
-                            (temp % scaled_width != 0 || j >= 0))
-                            memcpy(result + temp + (scaled_width * k) + j, 
-                                    result + temp, 
-                                    sizeof(uint8_t) * 3);
-                    }
-                }
+            for (int j = -3*radius + index; j <= radius*6 - radius*3; j+=3) {
+                if (temp + zoomedWidth * i + j > 0 &&
+                    temp + zoomedWidth * i + j < maxHeight)
+                        memcpy(result + temp + zoomedWidth*i + j, result + temp, sizeof(uint8_t) * 3);
             }
         }
     }
 
-    // Falls es Lücken gibt
-    if (scale % 2 == 0) {
-        for (size_t y = 0; y < height; y++) {
-            for (size_t x = 0; x < width; x++) {
-                // Ursprungspixel
-                temp = (max_scaled_height - y * scaled_width * scale + x * 3 * scale);
+    if (scale % 2) index = 0;
+    else index = 1;
 
-                // Lücken auf der rechten Seite
-                for (int i = -1 * radius; i <= radius; i++) {
-                    if (temp + i*scaled_width + (radius+1)*3 > 0 &&
-                        temp + i*scaled_width + (radius+1)*3 < max) {
-                            memcpy(result + temp + i*scaled_width + (radius+1)*3,
-                                    result + temp, 
-                                    sizeof(uint8_t)*3);
-                    }
-                    // Rechter Rand
-                    if (x+1 >= width) {
-                        memcpy(result + temp + i*scaled_width + (radius+2)*3,
-                                result + temp,
-                                sizeof(uint8_t)*3*radius);
-                    }
-                }
-                // Noch was kleines am rechten Rand
-                if (x+1 >= width) {
-                    memcpy(result + temp + (-1*radius -1)*scaled_width + (radius+2)*3, result + temp, sizeof(uint8_t)*3*radius);
-                }
-
-                // Lücken auf der Unterseite
-                for (int i = -3 * radius; i <= (radius + 1) * 3; i += 3) {
-                    if (temp % scaled_width != 0 || i >= 0) {
-                        memcpy(result + temp - scaled_width * (radius + 1) + i, 
-                                result + temp, 
-                                sizeof(uint8_t) * 3);
-                    }
-                    // unterer Rand
-                    if (y + 1 >= height) {
-                        for (int j = 0; j < radius; j++) {
-                            // if (temp % scaled_width != 0)
-                            memcpy(result + temp - scaled_width * (radius + 2 + j) + i, 
-                                    result + temp,
-                                    sizeof(uint8_t) * 3);
-                        }
-                    }
-                }
-
-                // Lücke am unteren rechten Rand
-                if (x + 1 >= width && y + 1 >= height) {
-                    for (int k = 0; k < radius; k++) {
-                        memcpy(result + temp - scaled_width * (radius + 2 + k) + (radius + 2) * 3, 
-                                result + temp,
-                                sizeof(uint8_t) * 3 * radius);
-                    }
-                }
-            }
+    // Falls Lücken
+    if (index) {
+        // Vertikale Lücken für die erste Reihe
+        temp = fixpointAddr[0];
+        for (int i = -1*radius; i <= 0; i++)
+                memcpy(result + temp + (radius + 1)*3 + zoomedWidth*i, result + temp, sizeof(uint8_t) * 3);
+        // Andere vertikale Lücken
+        for (size_t t = width; t < length; t++) {
+            temp = fixpointAddr[t];
+            for (int i = -1*radius; i <= radius; i++)
+                    memcpy(result + temp + (radius + 1)*3 + zoomedWidth*i, result + temp, sizeof(uint8_t) * 3);
         }
+        // TODO: Horizonatle Lücken
     }
 
-    // Sonst nur Rand
-    else {
-        for (size_t y = 0; y < height; y++) {
-            for (size_t x = 0; x < width; x++) {
-                // Ursprungspixel
-                temp = (max_scaled_height - y * scaled_width * scale + x * 3 * scale);
-
-                // Rechter Rand
-                for (int i = -1 * radius; i <= radius; i++) {
-                    if (x + 1 >= width) {
-                        memcpy(result + temp + i * scaled_width + (radius + 1) * 3, 
-                                result + temp,
-                                sizeof(uint8_t) * 3 * radius);
-                    }
-                }
-
-                // Unterer Rand
-                for (int i = -3 * radius; i <= (radius + 1) * 3; i += 3) {
-                    if (y + 1 >= height) {
-                        for (int j = 0; j < radius; j++) {
-                            memcpy(result + temp - scaled_width * (radius + 1 + j) + i, 
-                                    result + temp,
-                                    sizeof(uint8_t) * 3);
-                        }
-                    }
-                }
-
-                // Lücke am unteren rechten Rand
-                if (x + 1 >= width && y + 1 >= height) {
-                    for (int k = 0; k < radius; k++) {
-                        memcpy(result + temp - scaled_width * (radius + 1 + k) + (radius + 1) * 3, 
-                                result + temp,
-                                sizeof(uint8_t) * 3 * radius);
-                    }
-                }
-            }
-        }
+    // Recher Rand
+    for (size_t t = width - 1; t < length; t+=width) {
+        temp = fixpointAddr[t];
+        for (int i = -1*radius; i <= radius; i++)
+            memcpy(result + temp + (radius+1)*3 + i*zoomedWidth, result + temp, sizeof(uint8_t) * 3 * (radius + index));
     }
+
+    // Unterer Rand
+    for (size_t t = 1; t <= radius; t++)
+        memcpy(result + fixpointAddr[length-width] - zoomedWidth*(radius+t+1), 
+                result + fixpointAddr[length-width], 
+                sizeof(uint8_t) * 3 * zoomedWidth);
+
 }
