@@ -40,9 +40,9 @@ void zoom(const uint8_t *img, size_t width, size_t height, size_t scale, uint8_t
 
     // Kopieren aller Originalpixel
     for (size_t y = 0; y < height; y++) {
-        for (size_t x = 0; x < width; x++) {
-            pixelAddr[index++] = zoomedHeight - y * zoomedWidth * scale + x * 3 * scale;
-            uint8_t* target_ptr = result + pixelAddr[index-1];
+        for (size_t x = 0; x < width; x++, index++) {
+            pixelAddr[index] = zoomedHeight - y * zoomedWidth * scale + x * 3 * scale;
+            uint8_t* target_ptr = result + pixelAddr[index];
             uint8_t* source_ptr = img + ((height * paddedWidth - paddedWidth) - y * paddedWidth + x * 3);
             target_ptr[0] = source_ptr[0];
             target_ptr[1] = source_ptr[1];
