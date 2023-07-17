@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -std=c17
+CFLAGS = -Wall -std=c17 -O2
 
 all: main
 
@@ -16,4 +16,4 @@ bmp_io.o: bmp_io.c bmp_io.h
 	$(CC) $(CFLAGS) -c bmp_io.c
 
 clean:
-	rm -f *.o main ../images/lena_output.bmp ../images/4_pixels_output.bmp
+	rm -f *.o main
